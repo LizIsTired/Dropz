@@ -2,7 +2,7 @@ package dev.lazurite.dropz.mixin.client;
 
 import dev.lazurite.dropz.util.DropType;
 import dev.lazurite.dropz.util.storage.ItemEntityStorage;
-import dev.lazurite.rayon.core.impl.util.math.QuaternionHelper;
+import dev.lazurite.rayon.core.impl.bullet.math.Converter;
 import dev.lazurite.rayon.entity.api.EntityPhysicsElement;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -42,7 +42,7 @@ public abstract class ItemEntityRendererMixin extends EntityRenderer<ItemEntity>
     public void render(ItemEntity itemEntity, float f, float tickDelta, MatrixStack matrixStack, VertexConsumerProvider vertexConsumerProvider, int i, CallbackInfo info) {
         ItemStack itemStack = itemEntity.getStack();
         BakedModel bakedModel = this.itemRenderer.getHeldItemModel(itemStack, itemEntity.world, null);
-        Quaternion orientation = QuaternionHelper.bulletToMinecraft(((EntityPhysicsElement) itemEntity).getPhysicsRotation(new com.jme3.math.Quaternion(), tickDelta));
+        Quaternion orientation = Converter.toMinecraft(((EntityPhysicsElement) itemEntity).getPhysicsRotation(new com.jme3.math.Quaternion(), tickDelta));
         DropType type = ((ItemEntityStorage) itemEntity).getDropType();
         this.shadowRadius = 0.0f;
 

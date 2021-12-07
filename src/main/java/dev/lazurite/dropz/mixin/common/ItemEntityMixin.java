@@ -5,10 +5,11 @@ import com.jme3.math.Vector3f;
 import dev.lazurite.dropz.util.DropType;
 import dev.lazurite.dropz.util.storage.ItemEntityStorage;
 import dev.lazurite.dropz.Dropz;
-import dev.lazurite.rayon.core.impl.physics.space.MinecraftSpace;
-import dev.lazurite.rayon.core.impl.physics.space.body.ElementRigidBody;
-import dev.lazurite.rayon.core.impl.physics.space.body.shape.BoundingBoxShape;
+import dev.lazurite.rayon.core.impl.bullet.collision.body.shape.MinecraftShape;
+import dev.lazurite.rayon.core.impl.bullet.collision.space.MinecraftSpace;
+import dev.lazurite.rayon.core.impl.bullet.collision.body.ElementRigidBody;
 import dev.lazurite.rayon.entity.api.EntityPhysicsElement;
+import dev.lazurite.rayon.entity.impl.collision.body.EntityRigidBody;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.entity.*;
@@ -29,6 +30,7 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -70,7 +72,7 @@ public abstract class ItemEntityMixin extends Entity implements EntityPhysicsEle
         if (!getStack().getItem().equals(prevItem)) {
             this.type = DropType.get(getStack());
             this.prevItem = getStack().getItem();
-            CollisionShape shape = new BoundingBoxShape(type.getBox());
+            CollisionShape shape = new MinecraftShape((List<Vector3f>) type.getBox());
 
             MinecraftSpace.get(asEntity().getEntityWorld()).getThread().execute(() -> {
                 getRigidBody().setCollisionShape(shape);
@@ -129,8 +131,8 @@ public abstract class ItemEntityMixin extends Entity implements EntityPhysicsEle
     }
 
     @Override
-    public ElementRigidBody getRigidBody() {
-        return this.rigidBody;
+    public EntityRigidBody getRigidBody() {
+        return (EntityRigidBody) this.rigidBody;
     }
 
     @Override
